@@ -1,0 +1,23 @@
+# OS / éditeurs
+.DS_Store
+.idea/
+.vscode/
+*.code-workspace
+
+# C / build
+*.o
+*.a
+a.out
+*.out
+*.dSYM/
+build/
+obj/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Divers
+*.log
