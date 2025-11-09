@@ -1,4 +1,3 @@
-```md
 # 🧩 Libft — Rebuilding the C Standard Library
 
 ![C](https://img.shields.io/badge/language-C-blue)
