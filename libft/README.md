@@ -1,24 +1,31 @@
-# 🧩 Libft — My First C Library
+```md
+# 🧩 Libft — Rebuilding the C Standard Library
 
-## 📖 Project Overview
+![C](https://img.shields.io/badge/language-C-blue)
+![Norminette](https://img.shields.io/badge/Norminette-OK-brightgreen)
+![42](https://img.shields.io/badge/42%20Project-Libft-%23000000)
 
-**Libft** is the very first project in the 42 curriculum.  
-Its goal is to **rebuild a custom version of the C standard library**, step by step, by re-implementing key standard functions such as `memcpy`, `strdup`, `atoi`, and more — all from scratch, **without using the original library**.
+---
 
-This project is the foundation of everything in the Common Core.  
-It forces you to understand how memory works, how pointers behave, and how to write code that is not only functional but also **robust, readable, and leak-free**.
+## 📖 Overview
+
+**Libft** is the very first project in the **42 curriculum**.  
+Its goal is to rebuild a **custom version of the C standard library**, from scratch — by re-implementing fundamental functions such as `memcpy`, `strdup`, `atoi`, and more, **without using the original libc**.
+
+This project lays the foundation for all upcoming work in the Common Core.  
+It teaches you how memory really works, how pointers behave, and how to write code that is **robust, modular, and memory-safe**.
 
 ---
 
 ## 🧠 Learning Objectives
 
-- Reimplement functions from the **libc**  
-- Handle **pointers and type casting** safely  
+- Recreate standard **libc** functions  
+- Understand and manipulate **pointers and type casting**  
 - Master **dynamic memory allocation and freeing**  
-- Work with **arrays and strings** at a low level  
-- Build and manipulate **linked lists** (bonus part)  
-- Respect the **42 Norminette** and modular project architecture  
-- Manage compilation using a **Makefile** and static libraries (`.a`)
+- Manipulate **arrays, strings, and lists** at a low level  
+- Write **clean, Norminette-compliant** code  
+- Build and manage a **static library** (`libft.a`)  
+- Organize code into **modular folders** and compile with a **Makefile**
 
 ---
 
@@ -27,16 +34,22 @@ It forces you to understand how memory works, how pointers behave, and how to wr
 ```
 
 libft/
-├── Makefile               # Builds the libft.a library
-├── libft.h                # All function prototypes + struct definitions
-├── ft_*.c                 # Mandatory and additional functions
-├── bonus/ft_lst*.c        # Linked list functions (bonus part)
-└── main.c                 # Custom test file (not submitted)
+├── includes/
+│   └── libft.h                # All function prototypes
+├── srcs/
+│   ├── ctype/                 # Character classification (ft_isalpha, ft_isdigit, etc.)
+│   ├── string/                # String manipulation (ft_strlen, ft_strdup, etc.)
+│   ├── memory/                # Memory operations (ft_memcpy, ft_memmove, etc.)
+│   ├── convert/               # Conversion functions (ft_atoi, ft_itoa, etc.)
+│   ├── io/                    # Output to file descriptors (ft_putchar_fd, etc.)
+│   └── list/                  # Bonus: linked lists (ft_lstnew, ft_lstadd_back, etc.)
+├── Makefile
+└── README.md
 
 ````
 
-Each `.c` file implements **one function only**, and all prototypes are declared in `libft.h`.  
-The header file also contains the structure definition for linked lists:
+Each `.c` file contains **a single function**, and all prototypes are declared in `includes/libft.h`.  
+The header also defines the `t_list` structure for the bonus part:
 
 ```c
 typedef struct s_list
@@ -46,7 +59,7 @@ typedef struct s_list
 }	t_list;
 ````
 
-This structure taught me to manipulate **generic data types** using `void *`, and to understand **type casting** when dealing with unknown data.
+This structure helped me understand **generic pointers (`void *`)**, and how to safely cast them when manipulating arbitrary data.
 
 ---
 
@@ -62,7 +75,7 @@ make re         # Rebuild everything
 To use Libft in another project:
 
 ```bash
-gcc main.c -L. -lft -I. -o test
+gcc main.c -L. -lft -Iincludes -o test
 ```
 
 ---
@@ -81,7 +94,7 @@ int	main(void)
 }
 ```
 
-**Expected output:**
+**Output:**
 
 ```
 Length: 21
@@ -111,70 +124,50 @@ Length: 21
 
 ---
 
-## 🧱 How the Project Works (Architecture Explanation)
+## 🧱 Internal Architecture & Key Concepts
 
-Libft is **modular**:
-each function is self-contained, tested separately, and compiled into object files (`.o`) that are later grouped into a single static library (`libft.a`).
+Libft is **modular**: each function is self-contained, tested independently, and compiled into `.o` files that are later grouped into a static library (`libft.a`).
 
-When you link this library, you can call your custom `ft_` functions from any C program as if they were built-in.
+When linked, this library lets you use your own `ft_` functions in any C program as if they were built-in.
 
-The project can be seen as three logical layers:
+### 1️⃣ Low-Level Memory Layer
 
-1. **Low-level memory layer** — `ft_memset`, `ft_bzero`, `ft_memcpy`, `ft_memmove`
-   → Teaches you how data moves in memory, byte by byte, and how to handle **overlapping memory regions** safely (`ft_memmove` was one of the hardest to debug).
+Functions like `ft_memset`, `ft_bzero`, `ft_memcpy`, and `ft_memmove` taught me how data moves **byte by byte** in memory — and how to handle **overlaps** safely in `ft_memmove`.
 
-2. **String manipulation layer** — functions like `ft_strlcpy`, `ft_strtrim`, `ft_split`
-   → These were tricky because of **pointer arithmetic**, **null-termination**, and **memory protection** (ensuring you don’t read or write beyond allocated space).
+### 2️⃣ String Manipulation Layer
 
-3. **Dynamic data & list layer** — functions using `malloc`, and linked lists (`t_list`)
-   → Learning to **allocate, protect, and free** memory correctly was essential, especially in `ft_split`, where each substring must be freed if an allocation fails.
+Functions like `ft_strlcpy`, `ft_strtrim`, or `ft_split` required mastering **pointer arithmetic**, **NULL-termination**, and **memory safety**.
+
+### 3️⃣ Dynamic Data Layer
+
+Functions using `malloc` (like `ft_itoa`, `ft_split`, or linked lists) introduced **error handling**, **clean-up on failure**, and **freeing partial allocations**.
 
 ---
 
-## ⚠️ The Hard Parts
+## ⚠️ The Tricky Parts
 
-### 1️⃣ `void *` and Casting
+### 🔸 `void *` and Casting
 
-Understanding `void *` was initially confusing — it’s a **generic pointer** that can point to any data type.
-You have to **cast** it before dereferencing, for example:
+Understanding `void *` was key — it can point to **any type**, but you must cast it before dereferencing:
 
 ```c
-*(int *)ptr
+*(int *)ptr;
 ```
 
-This concept was key for writing `ft_memcpy`, `ft_memmove`, and all list functions.
+### 🔸 Handling Overlap in `ft_memmove`
 
----
+Copying bytes forward caused corruption when source and destination overlapped.
+Solution: detect overlap and copy **backward** if necessary.
 
-### 2️⃣ Memory Overlap in `ft_memmove`
+### 🔸 Memory Protection
 
-At first, I didn’t realize that copying bytes **forward** could corrupt data when the source and destination overlap.
-The fix was to detect overlap and copy **backward** when necessary:
+Functions like `ft_split` require robust protection:
 
-```c
-if (dst > src)
-    copy from the end;
-else
-    copy from the beginning;
-```
+* Check every `malloc`
+* Free previous allocations on failure
+* Always return `NULL` safely
 
----
-
-### 3️⃣ Memory Protection
-
-Functions like `ft_strjoin`, `ft_substr`, and `ft_split` require careful allocation:
-
-* Check if `malloc` returned `NULL`
-* Never access freed or uninitialized memory
-* Always **return `NULL`** when an allocation fails
-* Free previously allocated parts before returning
-
----
-
-### 4️⃣ Freeing `ft_split`
-
-`ft_split` allocates an array of strings — each one must be freed individually.
-I implemented a helper to clean up properly:
+Helper function:
 
 ```c
 static void	free_all(char **arr, int i)
@@ -185,27 +178,22 @@ static void	free_all(char **arr, int i)
 }
 ```
 
-Without this, one failed allocation could lead to massive memory leaks.
+### 🔸 Norminette Discipline
 
----
-
-### 5️⃣ The Norminette Discipline
-
-Keeping each function **under 25 lines**, respecting indentation, and avoiding forbidden constructs was its own challenge.
-It forced me to **refactor**, to split complex logic into smaller static helpers, and to write code that is both clean and concise.
+Keeping every function under **25 lines**, with perfect indentation and no forbidden constructs, forced clean design and modular thinking.
 
 ---
 
 ## 🧪 Testing & Debugging
 
-I tested each function using:
+I tested with:
 
-* **Custom `main.c` files** with edge cases
-* **Francinette** (42’s official tester)
-* **Valgrind** for memory leaks
-* **printf debugging** to track pointer values and memory content
+* **Custom main.c** edge cases
+* **Francinette** (42 tester)
+* **Valgrind** for leaks
+* **printf debugging** to visualize memory and pointer behavior
 
-Example test for `ft_split`:
+Example:
 
 ```c
 char **tab = ft_split(" 42  school  project ", ' ');
@@ -216,36 +204,31 @@ ft_free_split(tab);
 
 ---
 
-## 💡 What I Learned
-
-* Deep understanding of **pointers**, **arrays**, and **memory layout**
-* The importance of **defensive programming**
-* Writing code that is **leak-free and modular**
-* How to think like the **compiler and operating system**
-* Real discipline through **Norminette** and code style rules
-
----
-
 ## 🧰 Tools Used
 
 * **Language:** C (C11)
 * **Compiler:** `gcc -Wall -Wextra -Werror`
 * **OS:** Ubuntu / Linux (42 environment)
 * **Editor:** VSCode + Vim
-* **Testing tools:** Francinette, Valgrind, custom main files
+* **Testing:** Francinette, Valgrind, custom scripts
+
+---
+
+## 💡 Key Takeaways
+
+* Deep understanding of **pointers** and **memory layout**
+* Writing **modular, defensive, leak-free** code
+* Applying **algorithmic thinking** to low-level operations
+* Understanding **how libc works under the hood**
 
 ---
 
 ## 🏁 Project Status
 
 ✅ Completed and validated
-📍 Part of the **Common Core** at **École 19 (42 Brussels Network)**
+📍 Part of the **Common Core** at **42 Belgium Network**
 🔗 [My GitHub Profile](https://github.com/nabil4416)
-
 ---
 
-## ✨ Final Thought
-
-> “Understanding memory is understanding the soul of C.
-> Everything else is just syntax.”
+> 🧠 “To master C is to master memory. Everything else is just syntax.”
 
