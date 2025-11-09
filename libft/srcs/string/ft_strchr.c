@@ -1,32 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 18:06:21 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/28 16:07:26 by nkhotbi          ###   ########.fr       */
+/*   Created: 2025/10/21 11:20:45 by nkhotbi           #+#    #+#             */
+/*   Updated: 2025/10/28 15:48:16 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isalnum(int c)
+char	*ft_strchr(const char *s, int c)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-		|| (c >= '0' && c <= '9'))
-		return (1);
-	return (0);
+	unsigned	i;
+	char	letr;
+
+	letr = (char)c;
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == letr)
+		       return ((char *) &s[i]);
+		i++;
+	}
+	if (letr == '\0')
+		return ((char *) &s[i]);
+	return (NULL);
 }
 
 /*#include <stdio.h>
 
 int	main(void)
 {
-	printf("is a alnum: %d\n", ft_isalnum('a'));
-	printf("is R alnum: %d\n", ft_isalnum('R'));
-	printf("is ! alnum: %d\n", ft_isalnum('!'));
-	printf("is & alnum: %d\n", ft_isalnum('&'));
+	char txt[] = "Ambition";
+	char *first_i = ft_strchr(txt, 'i');
+	printf("la position de i found: %s\n", first_i);
+	char *first_z = ft_strchr(txt, 'z');
+	if (first_z == NULL)
+		printf("No 'z' found!\n");
 	return 0;
 }*/

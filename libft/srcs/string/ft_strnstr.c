@@ -1,32 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 18:06:21 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/28 16:07:26 by nkhotbi          ###   ########.fr       */
+/*   Created: 2025/10/22 11:40:18 by nkhotbi           #+#    #+#             */
+/*   Updated: 2025/10/28 15:53:38 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isalnum(int c)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-		|| (c >= '0' && c <= '9'))
-		return (1);
+	size_t	i;
+	size_t	j;
+
+	if (needle[0] == 0)
+		return ((char *)haystack);
+	i = 0;
+	while (haystack[i] && i < len)
+	{
+		j = 0;
+		while (haystack[i + j] == needle[j] && needle[j] && i + j < len)
+		{
+			j++;
+			if (needle[j] == 0)
+				return ((char *) haystack + i);
+		}
+		i++;
+	}
 	return (0);
 }
-
 /*#include <stdio.h>
 
 int	main(void)
 {
-	printf("is a alnum: %d\n", ft_isalnum('a'));
-	printf("is R alnum: %d\n", ft_isalnum('R'));
-	printf("is ! alnum: %d\n", ft_isalnum('!'));
-	printf("is & alnum: %d\n", ft_isalnum('&'));
+	char txt1[] = "Person Lit Spector";
+	char tofind[] ="Lit";
+	char *result;
+
+	result = ft_strnstr(txt1, tofind, 14);
+	printf("What: %s\n", result);
 	return 0;
 }*/

@@ -1,32 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 18:06:21 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/28 16:07:26 by nkhotbi          ###   ########.fr       */
+/*   Created: 2025/10/21 12:45:14 by nkhotbi           #+#    #+#             */
+/*   Updated: 2025/10/28 15:54:43 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isalnum(int c)
+char	*ft_strrchr( const char *s, int c)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-		|| (c >= '0' && c <= '9'))
-		return (1);
-	return (0);
-}
+	char	letr;
+	int	i;
 
+	letr = (char)c;
+	i = 0;
+	while (s[i])
+		i++;
+	while (i >= 0)
+	{
+		if (s[i] == letr)
+			return ((char *) &s[i]);
+		i--;
+	}
+	return (NULL);
+}
 /*#include <stdio.h>
 
 int	main(void)
 {
-	printf("is a alnum: %d\n", ft_isalnum('a'));
-	printf("is R alnum: %d\n", ft_isalnum('R'));
-	printf("is ! alnum: %d\n", ft_isalnum('!'));
-	printf("is & alnum: %d\n", ft_isalnum('&'));
+	char	*txt = "Ambition, consistency, succes";
+	char *last_comma = ft_strrchr(txt, ',');
+	printf("After lasat comma: %s\n", last_comma);
+	char *last_z = ft_strrchr(txt, 'z');
+	if (last_z == NULL)
+		printf("not found\n");
 	return 0;
 }*/

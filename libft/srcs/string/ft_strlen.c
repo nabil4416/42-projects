@@ -1,32 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 18:06:21 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/28 16:07:26 by nkhotbi          ###   ########.fr       */
+/*   Created: 2025/10/18 18:08:35 by nkhotbi           #+#    #+#             */
+/*   Updated: 2025/10/25 12:13:41 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isalnum(int c)
+size_t	ft_strlen(const char *s)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-		|| (c >= '0' && c <= '9'))
-		return (1);
-	return (0);
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
 
 /*#include <stdio.h>
 
 int	main(void)
 {
-	printf("is a alnum: %d\n", ft_isalnum('a'));
-	printf("is R alnum: %d\n", ft_isalnum('R'));
-	printf("is ! alnum: %d\n", ft_isalnum('!'));
-	printf("is & alnum: %d\n", ft_isalnum('&'));
+	char txt[] = "ambition";
+
+	printf("nb c: %d\n", ft_strlen(txt));
 	return 0;
 }*/

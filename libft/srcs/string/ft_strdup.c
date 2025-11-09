@@ -1,32 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 18:06:21 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/28 16:07:26 by nkhotbi          ###   ########.fr       */
+/*   Created: 2025/10/25 11:26:03 by nkhotbi           #+#    #+#             */
+/*   Updated: 2025/10/25 12:15:18 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isalnum(int c)
+char	*ft_strdup(const char *s1)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-		|| (c >= '0' && c <= '9'))
-		return (1);
-	return (0);
-}
+	size_t	len_s;
+	char	*new;
+	size_t	i;
 
+	len_s = ft_strlen(s1);
+	new = malloc(len_s + 1);
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (i < len_s)
+	{
+		new[i] = s1[i];
+		i++;
+	}
+	new[i] = '\0';
+	return (new);
+}
 /*#include <stdio.h>
 
 int	main(void)
 {
-	printf("is a alnum: %d\n", ft_isalnum('a'));
-	printf("is R alnum: %d\n", ft_isalnum('R'));
-	printf("is ! alnum: %d\n", ft_isalnum('!'));
-	printf("is & alnum: %d\n", ft_isalnum('&'));
-	return 0;
+	char txt1[] = "Ambition & consistency";
+	char *new;
+	new = ft_strdup(txt1);
+	if (new)
+		printf("new: %s\n", new);
+	else
+		return (1);
+	free(new);
 }*/
