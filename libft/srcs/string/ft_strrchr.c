@@ -6,7 +6,7 @@
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 12:45:14 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/28 15:54:43 by nkhotbi          ###   ########.fr       */
+/*   Updated: 2025/10/28 17:20:28 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	*ft_strrchr( const char *s, int c)
 {
 	char	letr;
-	int	i;
+	int		i;
 
 	letr = (char)c;
 	i = 0;

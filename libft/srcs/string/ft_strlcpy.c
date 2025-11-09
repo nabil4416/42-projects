@@ -6,7 +6,7 @@
 /*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 16:38:53 by nkhotbi           #+#    #+#             */
-/*   Updated: 2025/10/20 15:35:21 by nkhotbi          ###   ########.fr       */
+/*   Updated: 2025/10/30 15:33:19 by nkhotbi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t destsize)
 	size_t	i;
 	size_t	src_len;
 
+	if (!dest || !src)
+		return (0);
 	src_len = 0;
 	while (src[src_len])
 		src_len++;
