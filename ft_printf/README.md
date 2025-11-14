@@ -1,91 +1,58 @@
-## 1️⃣ README.md (advanced + concise)
+# 🔢 ft_printf — Custom printf Implementation
 
-````markdown
-# ft_printf
+> **42 Project — Rebuilding a simplified version of `printf` using variadic functions and low-level writing.**
 
-![Language](https://img.shields.io/badge/language-C-blue)
-![42 Project](https://img.shields.io/badge/42-Project-000000?logo=42&logoColor=white)
-![Repo stars](https://img.shields.io/github/stars/nabil4416/ft_printf?style=flat-square)
-![Build](https://img.shields.io/github/actions/workflow/status/nabil4416/ft_printf/ci.yml?branch=main&label=build)
+## 📌 Project Goal
 
-<p align="center">
-  <img src="assets/ft_printf-logo.svg" alt="ft_printf logo" width="220">
-</p>
+Reproduce the core behavior of the standard `printf` function, using only:
 
----
+* `write`
+* `malloc` / `free`
+* `va_start`, `va_arg`, `va_copy`, `va_end`
 
-## 📌 Overview
-
-`ft_printf` is a custom implementation of the standard C `printf` function, written as part of the **42** curriculum.
-
-The goal is to:
-
-- Parse a **format string**
-- Handle a subset of **format specifiers**
-- Use **variadic functions** (`va_list`)
-- Write output using **low-level I/O** (`write`)
-- Return the **number of characters printed**, like the real `printf`.
-
-This project is a key step to understanding:
-- how formatted output works internally,
-- how to manage memory and buffers safely,
-- how to design small, reusable printing utilities.
+This project teaches how to parse formatted strings, handle multiple data types, and manage memory safely while working with variadic arguments.
 
 ---
 
-## ✅ Supported Conversions
+## 🚀 Supported Conversions
 
-`ft_printf()` currently handles:
+My `ft_printf()` currently handles:
 
-| Specifier | Description                    |
-|----------|---------------------------------|
-| `%c`     | Single character                |
-| `%s`     | String                          |
-| `%d`     | Signed decimal integer          |
-| `%i`     | Signed decimal integer (alias)  |
-| `%x`     | Unsigned hexadecimal (lowercase)|
-| `%%`     | Literal percent sign `%`        |
+| Conversion  | Description                      |
+| ----------- | -------------------------------- |
+| `%c`        | Print a character                |
+| `%s`        | Print a string                   |
+| `%d` / `%i` | Signed decimal integer           |
+| `%x`        | Lowercase hexadecimal (unsigned) |
+| `%%`        | Print a literal `%`              |
 
-Each call returns the **total number of characters written**, or `-1` on error (e.g. `write()` failure).
+Each conversion returns the **number of characters printed**, or `-1` on write error.
 
 ---
 
-## 🧠 Design & Architecture
+## 🧠 Project Structure
 
-Typical file layout:
-
-```text
+```
 ft_printf/
-├── ft_printf.c        # Main ft_printf entry point
-├── handle_token.c     # Parsing of '%' tokens
-├── dispatch.c         # Dispatch table for conversions
-├── ft_putchar.c       # Low-level char output
-├── ft_putstr.c        # String output
-├── ft_putnbr_dec.c    # Decimal integer output
-├── ft_putnbr_hex.c    # Hexadecimal output
-├── ft_utils.c         # Helpers (length, checks, etc.)
-├── ft_printf.h        # Prototypes and includes
+├── ft_printf.c
+├── dispatch.c
+├── handle_token.c
+├── ft_putchar.c
+├── ft_putstr.c
+├── ft_putnbr_dec.c
+├── ft_putnbr_hex.c
+├── ft_utils.c
+├── ft_printf.h
 └── Makefile
-````
+```
 
-### Flow
+### 🔍 How it Works
 
-1. `ft_printf()` walks through the format string.
-2. Regular characters are written directly with `write()`.
-3. On `'%'`, it calls `handle_token()`:
-
-   * validates the next character,
-   * forwards control to `dispatch()`.
-4. `dispatch()` selects the appropriate function based on the specifier:
-
-   * `%c` → `ft_putchar`
-   * `%s` → `ft_putstr`
-   * `%d`/`%i` → `ft_putnbr_dec`
-   * `%x` → `ft_putnbr_hex`
-5. Each helper returns how many characters it wrote.
-6. `ft_printf()` accumulates this count and returns it.
-
-Error handling is propagated: if a write fails, the functions return `-1` and the error bubbles up.
+* `ft_printf()` iterates over the format string.
+* When it encounters `%`, it calls `handle_token()`.
+* `handle_token()` reads the next character and calls `dispatch()`.
+* `dispatch()` redirects to the correct printing function.
+* Each printing function returns how many characters it wrote.
 
 ---
 
@@ -96,63 +63,59 @@ Error handling is propagated: if a write fails, the functions return `-1` and th
 
 int main(void)
 {
-    ft_printf("Hello %s!\n", "World");
-    ft_printf("Decimal: %d | Hex: %x\n", 42, 42);
-    ft_printf("Char: %c | Percent: %%\n", 'A');
-    ft_printf("Negative: %d\n", -12345);
+    ft_printf("Hello %s!\n", "Isaac");
+    ft_printf("Decimal: %d\n", 42);
+    ft_printf("Hex: %x\n", 255);
+    ft_printf("Char: %c\n", 'A');
+    ft_printf("Percent: %%\n");
     return 0;
 }
 ```
 
 ---
 
-## 🛠 Build
+## 📦 Build Instructions
 
-Build the static library:
+### Build the library:
 
 ```bash
 make
 ```
 
-Clean object files:
+### Clean object files:
 
 ```bash
 make clean
 ```
 
-Remove all build artifacts:
+### Remove all build artifacts:
 
 ```bash
 make fclean
 ```
 
-Rebuild from scratch:
+### Rebuild from scratch:
 
 ```bash
 make re
 ```
 
-You can link the library with a test file:
-
-```bash
-cc main.c libftprintf.a -o test_ftprintf
-./test_ftprintf
-```
-
-*(Adapt the library filename if your Makefile uses a different name.)*
-
 ---
 
-## 🧪 Testing vs. stdio printf
+## 🛠️ Technical Notes
 
-A simple test driver is provided in `main.c` (see below in this repo).
-It compares `ft_printf` output and return values with the standard `printf` for:
+* Full error handling for `write()`
+* No forbidden functions (`printf`, `itoa`, etc.)
+* Decimal and hexadecimal conversions implemented manually
+* Correct use of `va_list` for variadic argument parsing
+* Code fully Norminette-compliant
 
-* basic strings and characters
-* positive and negative integers
-* edge cases (`INT_MIN`, `INT_MAX`)
-* hexadecimal values
-* mixed format strings
+This project strengthened my understanding of:
+
+* pointers and memory flow
+* parsing algorithms
+* low-level output
+* safe and clean C programming practices
 
 ---
 
@@ -160,58 +123,26 @@ It compares `ft_printf` output and return values with the standard `printf` for:
 
 * `man 3 printf`
 * `man 2 write`
-* C standard library documentation
-* 42 subject PDF & Norm rules
+* Variadic functions documentation (`va_list`)
+* 42 subject PDF & Norminette rules
 
 ---
 
 ## 👤 Author
 
 **Isaac Nabil**
-42 Belgium — ft_printf project
-🔗 GitHub: [nabil4416](https://github.com/nabil4416)
+42 Belgium Student | Front-end dev → Software Engineer
+📍 Belgium
+🔗 GitHub: [https://github.com/nabil4416](https://github.com/nabil4416)
 
-````
 
-> 🔧 Note: the **build badge** assumes you’ll later add a GitHub Actions workflow called `ci.yml` in `.github/workflows/`. Until then, the badge may show “no status” — that’s normal.
-
----
-
-## 2️⃣ Logo file — `assets/ft_printf-logo.svg`
-
-Crée un dossier `assets/` à la racine du repo, puis ajoute ce fichier sous le nom `ft_printf-logo.svg` :
-
-```svg
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="420" height="120" viewBox="0 0 420 120" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1E3A8A"/>
-      <stop offset="100%" stop-color="#38BDF8"/>
-    </linearGradient>
-    <style>
-      .bg { fill: #0F172A; }
-      .badge { fill: url(#grad); }
-      .title { fill: #E5E7EB; font-family: "Fira Code", monospace; font-size: 34px; font-weight: 600; }
-      .subtitle { fill: #9CA3AF; font-family: "Fira Code", monospace; font-size: 14px; }
-      .mono { fill: #FACC15; font-family: "Fira Code", monospace; font-size: 16px; }
-    </style>
-  </defs>
-
-  <!-- Background -->
-  <rect class="bg" x="0" y="0" width="420" height="120" rx="18" />
-
-  <!-- Gradient badge -->
-  <rect class="badge" x="20" y="24" width="70" height="70" rx="16" />
-
-  <!-- Curly brace / percent combo -->
-  <text x="40" y="67" class="mono">{</text>
-  <text x="55" y="90" class="mono">%</text>
-
-  <!-- Title -->
-  <text x="120" y="53" class="title">ft_printf</text>
-
-  <!-- Subtitle -->
-  <text x="120" y="78" class="subtitle">minimal printf • variadic C • 42 project</text>
-</svg>
-````
+# Resources
+https://www.cprogramming.com/tutorial/printf-format-strings.html <br />
+https://blog.aaronballman.com/2012/06/how-variable-argument-lists-work-in-c/ <br />
+https://stackoverflow.com/questions/38023473/include-first-argument-in-va-list-object <br />
+https://wiki.sei.cmu.edu/confluence/display/c/EXP47-C.+Do+not+call+va_arg+with+an+argument+of+the+incorrect+type <br />
+https://newbedev.com/char-type-in-va-arg <br />
+http://underpop.online.fr/j/java/help/using-flags-in-the-printf-format-string-formatted-output.html.gz <br />
+https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/va-arg-va-copy-va-end-va-start?view=msvc-170 <br />
+https://velog.io/@ljiwoo59/ftprintf <br />
+https://www.lix.polytechnique.fr/~liberti/public/computing/prog/c/C/FUNCTIONS/format.html
