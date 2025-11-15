@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nkhotbi <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/15 09:12:49 by nkhotbi           #+#    #+#             */
+/*   Updated: 2025/11/15 10:53:55 by nkhotbi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *s)
@@ -14,61 +26,67 @@ size_t	ft_strlen(const char *s)
 
 char	*ft_strchr(const char *s, int c)
 {
+	char	letr;
+	int		i;
+
 	if (!s)
 		return (NULL);
-	while (*s)
+	letr = (char)c;
+	i = 0;
+	while (s[i])
 	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
+		if (s[i] == letr)
+			return ((char *)&s[i]);
+		i++;
 	}
-	if (c == '\0')
-		return ((char *)s);
+	if (letr == '\0')
+		return ((char *)&s[i]);
 	return (NULL);
 }
 
 char	*ft_strdup(const char *s)
 {
-	char	*dup;
-	size_t	i;
+	char	*new;
+	int		i;
 
-	dup = malloc(ft_strlen(s) + 1);
-	if (!dup)
+	new = malloc(ft_strlen(s) + 1);
+	if (!new)
 		return (NULL);
 	i = 0;
 	while (s[i])
 	{
-		dup[i] = s[i];
+		new[i] = s[i];
 		i++;
 	}
-	dup[i] = '\0';
-	return (dup);
+	new[i] = '\0';
+	return (new);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
 {
-	char	*new_str;
-	size_t	i;
-	size_t	j;
+	char	*new;
+	int		i;
+	int		j;
 
 	if (!s1)
-		s1 = ft_strdup("");
+		return (ft_strdup(""));
 	if (!s2)
 		return (NULL);
-	new_str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!new_str)
+	new = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!new)
 		return (NULL);
 	i = 0;
 	while (s1[i])
 	{
-		new_str[i] = s1[i];
+		new[i] = s1[i];
 		i++;
 	}
 	j = 0;
 	while (s2[j])
-		new_str[i++] = s2[j++];
-	new_str[i] = '\0';
-	free(s1);
-	return (new_str);
+	{
+		new[i + j] = s2[j];
+		j++;
+	}
+	new[i + j] = '\0';
+	return (new);
 }
-
