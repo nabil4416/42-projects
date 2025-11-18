@@ -49,6 +49,8 @@ char	*ft_strdup(const char *s)
 	char	*new;
 	int		i;
 
+	if (!s)
+		return (NULL);
 	new = malloc(ft_strlen(s) + 1);
 	if (!new)
 		return (NULL);
@@ -62,31 +64,39 @@ char	*ft_strdup(const char *s)
 	return (new);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+static void	copy_strs(char *dst, char *s1, char *s2)
 {
-	char	*new;
-	int		i;
-	int		j;
+	size_t	i;
+	size_t	j;
 
-	if (!s1)
-		return (ft_strdup(""));
-	if (!s2)
-		return (NULL);
-	new = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!new)
-		return (NULL);
 	i = 0;
 	while (s1[i])
 	{
-		new[i] = s1[i];
+		dst[i] = s1[i];
 		i++;
 	}
 	j = 0;
 	while (s2[j])
 	{
-		new[i + j] = s2[j];
+		dst[i + j] = s2[j];
 		j++;
 	}
-	new[i + j] = '\0';
+	dst[i + j] = '\0';
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*new;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
+	new = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!new)
+		return (NULL);
+	copy_strs(new, s1, s2);
 	return (new);
 }

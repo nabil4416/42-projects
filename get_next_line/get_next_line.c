@@ -15,6 +15,7 @@
 static char	*read_file(int fd, char *stash)
 {
 	char	*buf;
+	char	*tmp;
 	ssize_t	bytes_read;
 
 	buf = malloc(BUFFER_SIZE + 1);
@@ -30,7 +31,9 @@ static char	*read_file(int fd, char *stash)
 			return (NULL);
 		}
 		buf[bytes_read] = '\0';
-		stash = ft_strjoin(stash, buf);
+		tmp = ft_strjoin(stash, buf);
+		free(stash);
+		stash = tmp;
 	}
 	free(buf);
 	return (stash);
@@ -99,5 +102,14 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = extract_line(stash);
 	stash = update_stash(stash);
+	if (!line)
+	{
+		if (stash)
+		{
+			free(stash);
+			stash = NULL;
+		}
+		return (NULL);
+	}
 	return (line);
 }
