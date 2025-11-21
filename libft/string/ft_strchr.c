@@ -14,9 +14,11 @@
 
 char	*ft_strchr(const char *s, int c)
 {
-	unsigned int	i;
+	size_t	i;
 	char			letr;
 
+	if (!s)
+		return (NULL);
 	letr = (char)c;
 	i = 0;
 	while (s[i])
