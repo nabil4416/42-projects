@@ -78,7 +78,7 @@ static char	*update_stash(char *stash)
 		free(stash);
 		return (NULL);
 	}
-	new_stash = malloc(ft_strlen(stash) - i);
+	new_stash = malloc(ft_strlen(stash) - i + 1);
 	if (!new_stash)
 		return (NULL);
 	i++;
