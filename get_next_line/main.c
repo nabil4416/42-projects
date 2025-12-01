@@ -4,9 +4,10 @@
 #include "get_next_line.h"
 
 //premier test: Pass an arbitrary file descriptor … on which it is not possible to read, for example 42. The function must return NULL.
-printf("=====First Test====");
-int main(void)
+
+/*int main(void)
 {
+	printf("=====First Test====\n");
     char *line;
 
     line = get_next_line(42);
@@ -18,12 +19,12 @@ int main(void)
         free(line);
     }
     return (0);
-}
+}*/
 
-//deuxieme test:
-printf("=====Second Test====");
-int main(int argc, char **argv)
+//deuxieme test: tous les testes
+/*int main(int argc, char **argv)
 {
+	printf("=====Second Test====\n");
     int   fd;
     char *line;
     int   i = 0;
@@ -46,19 +47,20 @@ int main(int argc, char **argv)
     }
     close(fd);
     return (0);
-}
+}*/
 
 
 
-/*int main(void)
+int main(void)
 {
     char *line;
+    int	i = 0;
 
     while ((line = get_next_line(0)) != NULL)  // 0 = stdin
     {
-        printf("%s", line);
+        printf("LINE %d: [%s]\n", i++, line);
         free(line);
     }
     return (0);
-}*/
+}
 
