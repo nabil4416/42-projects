@@ -12,7 +12,16 @@
 
 #include "get_next_line.h"
 
-static char	*read_file(int fd, char *stash)
+static void	cleanup_stock(char **stock)
+{
+	if (*stock)
+	{
+		free(*stock);
+		*stock = NULL;
+	}
+}
+
+static char	*read_file(int fd, char *stock)
 {
 	char	*buf;
 	char	*tmp;
@@ -20,95 +29,90 @@ static char	*read_file(int fd, char *stash)
 
 	buf = malloc(BUFFER_SIZE + 1);
 	if (!buf)
-		return (NULL);
+		return (cleanup_stock(&stock), NULL);
 	bytes_read = 1;
-	while (!ft_strchr(stash, '\n') && bytes_read > 0)
+	while (!ft_strchr(stock, '\n') && bytes_read > 0)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read < 0)
-		{
-			free(buf);
-			return (NULL);
-		}
+			return (free(buf), cleanup_stock(&stock), NULL);
 		buf[bytes_read] = '\0';
-		tmp = ft_strjoin(stash, buf);
-		free(stash);
-		stash = tmp;
+		tmp = ft_strjoin(stock, buf);
+		free(stock);
+		stock = tmp;
+		if (!stock)
+			return (free(buf), NULL);
 	}
 	free(buf);
-	return (stash);
+	return (stock);
 }
 
-static char	*extract_line(char *stash)
+static char	*extract_line(char *stock)
 {
 	char	*line;
 	size_t	i;
 
-	if (!stash || !*stash)
+	if (!stock || !*stock)
 		return (NULL);
 	i = 0;
-	while (stash[i] && stash[i] != '\n')
+	while (stock[i] && stock[i] != '\n')
 		i++;
-	line = malloc(i + (stash[i] == '\n') + 1);
+	line = malloc(i + (stock[i] == '\n') + 1);
 	if (!line)
 		return (NULL);
 	i = 0;
-	while (stash[i] && stash[i] != '\n')
+	while (stock[i] && stock[i] != '\n')
 	{
-		line[i] = stash[i];
+		line[i] = stock[i];
 		i++;
 	}
-	if (stash[i] == '\n')
+	if (stock[i] == '\n')
 		line[i++] = '\n';
 	line[i] = '\0';
 	return (line);
 }
 
-static char	*update_stash(char *stash)
+static char	*update_stock(char *stock)
 {
-	char	*new_stash;
+	char	*new_stock;
 	size_t	i;
 	size_t	j;
 
 	i = 0;
-	while (stash[i] && stash[i] != '\n')
+	while (stock[i] && stock[i] != '\n')
 		i++;
-	if (!stash[i])
-	{
-		free(stash);
-		return (NULL);
-	}
-	new_stash = malloc(ft_strlen(stash) - i + 1);
-	if (!new_stash)
-		return (NULL);
+	if (!stock[i])
+		return (free(stock), NULL);
+	new_stock = malloc(ft_strlen(stock) - i + 1);
+	if (!new_stock)
+		return (free(stock), NULL);
 	i++;
 	j = 0;
-	while (stash[i])
-		new_stash[j++] = stash[i++];
-	new_stash[j] = '\0';
-	free(stash);
-	return (new_stash);
+	while (stock[i])
+		new_stock[j++] = stock[i++];
+	new_stock[j] = '\0';
+	free(stock);
+	return (new_stock);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*stash;
+	static char	*stock;
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	stash = read_file(fd, stash);
-	if (!stash)
-		return (NULL);
-	line = extract_line(stash);
-	stash = update_stash(stash);
-	if (!line)
 	{
-		if (stash)
-		{
-			free(stash);
-			stash = NULL;
-		}
+		cleanup_stock(&stock);
+		return (NULL);
+	}
+	stock = read_file(fd, stock);
+	if (!stock)
+		return (NULL);
+	line = extract_line(stock);
+	stock = update_stock(stock);
+	if (!line && stock)
+	{
+		cleanup_stock(&stock);
 		return (NULL);
 	}
 	return (line);
