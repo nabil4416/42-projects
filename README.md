@@ -14,10 +14,10 @@ Il regroupe mes projets du **nouveau tronc commun** de l’école 42, révisé e
 |---------|------------------|:------:|-------------|
 | [Libft](./libft) | C | 🟢 | My first C library — reimplementation of standard functions. |
 | [ft_printf](./ft_printf) | C | 🟢 | Recreation of the famous printf function using variadic arguments. |
-| [get_next_line](./get_next_line) | C | 🟡 | Reading a file line by line using static buffers. |
-| [B2BR](./B2BR) | C | 🔴 | System administration basics — automation and permissions. |
-| [Push_swap](./push_swap) | C | 🔴 | Sorting algorithm using two stacks and limited operations. |
-| [Piscine Python](./piscine_python) | Python | 🔴 | Object-oriented foundations and Python syntax. |
+| [get_next_line](./get_next_line) | C | 🟢 | Reading a file line by line using static buffers. |
+| [B2BR](./B2BR) | C | 🟢 | System administration basics — automation and permissions. |
+| [Push_swap](./push_swap) | C | 🟢 | Sorting algorithm using two stacks and limited operations. |
+| [Piscine Python](./piscine_python) | Python | 🟡 | Object-oriented foundations and Python syntax. |
 | [A-maze-ing](./a-maze-ing) | Python / Graphique | 🔴 | Maze generation and solving visualization. |
 | [Codexion](./codexion) | Python / Concurrency | 🔴 | Exploring concurrency and logic challenges. |
 | [Fly In](./fly_in) | Python / Algorithmic | 🔴 | Advanced pathfinding and optimization algorithms. |
