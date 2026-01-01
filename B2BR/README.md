@@ -103,4 +103,21 @@ The only file submitted is `signature.txt`, containing the signature of the virt
 The infographic above provides a high-level view of the system design, security layers, and monitoring strategy implemented in this virtual machine.
 
 ---
+## Resources
+
+The following official documentation and manuals were used as references for this project:
+
+- 42 Born2beroot subject (intra.42.fr)
+- Debian Official Documentation  
+  https://www.debian.org/doc/
+- Linux manual pages  
+  https://man7.org/linux/man-pages/
+- OpenSSH documentation  
+  https://www.openssh.com/manual.html
+- UFW (Uncomplicated Firewall) documentation  
+  https://help.ubuntu.com/community/UFW
+- sudo documentation  
+  https://www.sudo.ws/docs/
+- PAM (Pluggable Authentication Modules) documentation  
+  https://linux.die.net/man/8/pam
 
