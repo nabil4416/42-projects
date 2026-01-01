@@ -50,17 +50,49 @@
 }*/
 
 
-
-int main(void)
+// test on terminal
+/*int main(void)
 {
     char *line;
     int	i = 0;
 
     while ((line = get_next_line(0)) != NULL)  // 0 = stdin
     {
-        printf("LINE %d: [%s]\n", i++, line);
+        printf("LINE %d: %s\n", i++, line);
         free(line);
     }
     return (0);
+}*/
+
+int main(void)
+{
+   int     fd;
+   char    *line;
+
+
+   fd = open("test.txt", O_RDONLY);
+   if (fd < 0)
+       return (1);
+
+
+  /* while ((line = get_next_line(fd)) != NULL)
+   {
+   printf("%s", line);
+   free(line);
+   }*/
+   line = get_next_line(fd);
+   printf("%s", line);
+   free(line);
+   line = get_next_line(fd);
+   printf("%s", line);
+   free(line);
+   line = get_next_line(fd);
+   printf("%s", line);
+   free(line);
+   //while ((line = get_next_line(fd)) != NULL)
+//	   free(line);
+   // get_next_line(-1);
+   close(fd);
+   return (0);
 }
 
