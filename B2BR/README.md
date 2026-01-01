@@ -1,3 +1,10 @@
+# Born2beroot
+
+> A system administration project from the 42 curriculum focused on building a secure Linux server.
+
+![Born2beroot overview](assets/born2beroot_overview.png)
+
+This infographic summarizes the global architecture and security principles implemented in this project.
 
 ```md
 # Born2beroot
@@ -90,6 +97,10 @@ The only file submitted is `signature.txt`, containing the signature of the virt
 - Network security basics
 - Automation with cron
 ```
+
+## Visual overview
+
+The infographic above provides a high-level view of the system design, security layers, and monitoring strategy implemented in this virtual machine.
 
 ---
 
