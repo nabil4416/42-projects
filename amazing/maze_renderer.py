@@ -145,7 +145,8 @@ def _cell_content(
 
 
 def _path_to_cells(entry: Point, path: str) -> set[tuple[int, int]]:
-    """Convert a path string (NESW) into the set of visited cell coordinates."""
+    """Convert a path string (NESW) into
+    the set of visited cell coordinates."""
     x = entry.x
     y = entry.y
     visited: set[tuple[int, int]] = set()
@@ -169,4 +170,3 @@ def _help_line(state: RenderState) -> str:
     """Render a small help / status line."""
     on_off = "ON" if state.show_path else "OFF"
     return f"[r]egenerate  [p]ath:{on_off}  [c]olor  [q]uit"
-
