@@ -6,6 +6,7 @@ import pytest
 
 import src.llm_router as router_module
 from src.decoder import ConstrainedModel, DecodingResult
+from src.errors import GenerationError
 from src.json_grammar import FunctionCallGrammar
 from src.llm_router import build_routing_prompt, choose_definition
 from src.models import FunctionDefinition, PromptInput
@@ -56,8 +57,9 @@ def test_routing_prompt_contains_every_dynamic_definition() -> None:
         PromptInput(prompt="Launch now"),
     )
 
-    assert "- option_1 = fn_launch: Launch a rocket." in prompt
-    assert "- option_2 = fn_play: Play a song." in prompt
+    assert "- option_1 = fn_launch(value:string): Launch a rocket." in prompt
+    assert "- option_2 = fn_play(value:string): Play a song." in prompt
+    assert "- option_none = no matching function" in prompt
     assert 'Request:"Launch now"' in prompt
 
 
@@ -117,4 +119,39 @@ def test_multiple_functions_are_selected_by_constrained_llm(
     assert [
         definition.name
         for definition in received_grammars[0].definitions
-    ] == ["option_1", "option_2"]
+    ] == ["option_1", "option_2", "option_none"]
+
+
+def test_no_matching_function_raises_clear_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    definitions = [
+        make_definition("fn_alpha", "Perform alpha."),
+        make_definition("fn_beta", "Perform beta."),
+    ]
+
+    def fake_decode(
+        model: ConstrainedModel,
+        grammar: FunctionCallGrammar,
+        vocabulary: TokenVocabulary,
+        prepared_prompt: str,
+        *,
+        max_new_tokens: int = 128,
+    ) -> DecodingResult:
+        return DecodingResult(
+            text='{"fn_name":"option_none","args":{}}',
+            token_ids=(1,),
+        )
+
+    monkeypatch.setattr(router_module, "decode_function_call", fake_decode)
+
+    with pytest.raises(
+        GenerationError,
+        match="No supplied function matches the request",
+    ):
+        choose_definition(
+            definitions,
+            PromptInput(prompt="Do something unrelated"),
+            NeverUsedModel(),
+            make_vocabulary(),
+        )

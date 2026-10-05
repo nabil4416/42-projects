@@ -95,6 +95,8 @@ For each prompt, the program performs the following steps:
 4. Ask the LLM to select one function in a short constrained routing pass.
 5. Represent routing candidates with neutral identifiers such as `option_1`
    and map the selected identifier back to the original function definition.
+   A constrained `option_none` choice reports a clear error when no supplied
+   function matches the requested action.
 6. Build a second prompt containing only the selected function and its schema.
 7. Generate the function call token by token under the JSON grammar.
 8. Validate the completed call and add the original prompt to the output entry.
@@ -129,7 +131,8 @@ search space and makes generation faster and more reliable.
 Neutral routing identifiers prevent a shared name prefix such as `fn_` from
 dominating the first token decision. They do not encode keywords or manually
 choose a function: the LLM still makes the semantic selection from every
-function name and description.
+function name and description. The additional neutral `option_none` lets the
+LLM reject an unrelated request instead of forcing an incorrect function call.
 
 ### Prefix grammar instead of post-processing
 
@@ -215,7 +218,7 @@ so routine tests do not download or load Qwen.
 
 Final verification on the supplied data produced:
 
-- 150 passing pytest cases;
+- 151 passing pytest cases;
 - no Flake8 errors;
 - no mypy errors with `--strict`;
 - 11 correct function calls out of 11 supplied prompts;

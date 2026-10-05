@@ -5,8 +5,17 @@ from collections.abc import Sequence
 import pytest
 
 from src.errors import GenerationError
-from src.models import FunctionDefinition, PromptInput
-from src.pipeline import generate_results, parse_generated_call
+from src.models import FunctionCall, FunctionDefinition, PromptInput
+
+from src.pipeline import (
+    build_source_constrained_definition,
+    find_non_source_string_arguments,
+    explicit_source_string_candidates,
+    generate_results,
+    normalize_arguments,
+    source_string_candidates,
+)
+from src.pipeline import parse_generated_call
 from src.token_vocabulary import TokenVocabulary
 
 
@@ -128,3 +137,198 @@ def test_empty_prompt_sequence_returns_empty_results() -> None:
     )
 
     assert results == []
+
+
+def test_number_arguments_are_normalized_to_float() -> None:
+    definition = FunctionDefinition.model_validate(
+        {
+            "name": "fn_multiply",
+            "description": "Multiply two numbers.",
+            "parameters": {
+                "a": {"type": "number"},
+                "count": {"type": "integer"},
+            },
+            "returns": {"type": "number"},
+        }
+    )
+    call = FunctionCall(
+        fn_name="fn_multiply",
+        args={"a": 3, "count": 5},
+    )
+
+    assert normalize_arguments(call, definition) == {
+        "a": 3.0,
+        "count": 5,
+    }
+
+
+def test_detects_generated_string_absent_from_request() -> None:
+    definition = FunctionDefinition.model_validate(
+        {
+            "name": "fn_format",
+            "description": "Format supplied text.",
+            "parameters": {
+                "template": {
+                    "type": "string",
+                }
+            },
+            "returns": {
+                "type": "string",
+            },
+        }
+    )
+    request = PromptInput(
+        prompt='Format this exact text: Say "hello" to {name}'
+    )
+    call = FunctionCall(
+        fn_name="fn_format",
+        args={
+            "template": "hello world to {name}",
+        },
+    )
+
+    suspicious = find_non_source_string_arguments(
+        call,
+        definition,
+        request,
+    )
+
+    assert suspicious == ("template",)
+
+
+def test_accepts_string_copied_from_request() -> None:
+    definition = FunctionDefinition.model_validate(
+        {
+            "name": "fn_format",
+            "description": "Format supplied text.",
+            "parameters": {
+                "template": {
+                    "type": "string",
+                }
+            },
+            "returns": {
+                "type": "string",
+            },
+        }
+    )
+    request = PromptInput(
+        prompt='Format this exact text: Say "hello" to {name}'
+    )
+    call = FunctionCall(
+        fn_name="fn_format",
+        args={
+            "template": 'Say "hello" to {name}',
+        },
+    )
+
+    suspicious = find_non_source_string_arguments(
+        call,
+        definition,
+        request,
+    )
+
+    assert suspicious == ()
+
+
+def test_source_candidates_include_exact_trailing_phrase() -> None:
+    request = PromptInput(
+        prompt='Format this: Say "hello" to {name}'
+    )
+
+    candidates = source_string_candidates(request)
+
+    assert 'Say "hello" to {name}' in candidates
+
+
+def test_source_candidates_preserve_backslashes() -> None:
+    request = PromptInput(
+        prompt=r"Read C:\Users\john\config.ini with latin-1 encoding"
+    )
+
+    candidates = source_string_candidates(request)
+
+    assert r"C:\Users\john\config.ini" in candidates
+
+
+def test_source_candidates_extract_quoted_content() -> None:
+    request = PromptInput(
+        prompt="Run query 'SELECT * FROM users' on production"
+    )
+
+    candidates = source_string_candidates(request)
+
+    assert "SELECT * FROM users" in candidates
+
+
+def test_builds_constraint_for_single_suspicious_string() -> None:
+    definition = FunctionDefinition.model_validate(
+        {
+            "name": "fn_format",
+            "description": "Format supplied text.",
+            "parameters": {
+                "template": {
+                    "type": "string",
+                }
+            },
+            "returns": {
+                "type": "string",
+            },
+        }
+    )
+    request = PromptInput(
+        prompt='Format this: Say "hello" to {name}'
+    )
+
+    constrained = build_source_constrained_definition(
+        definition,
+        request,
+        ("template",),
+    )
+
+    assert constrained is not None
+    allowed = constrained.parameters["template"].allowed_values
+    assert allowed is not None
+    assert 'Say "hello" to {name}' in allowed
+
+
+def test_does_not_constrain_multiple_string_parameters() -> None:
+    definition = FunctionDefinition.model_validate(
+        {
+            "name": "fn_transform",
+            "description": "Transform text.",
+            "parameters": {
+                "text": {"type": "string"},
+                "pattern": {"type": "string"},
+            },
+            "returns": {
+                "type": "string",
+            },
+        }
+    )
+    request = PromptInput(prompt="Transform some text")
+
+    constrained = build_source_constrained_definition(
+        definition,
+        request,
+        ("pattern",),
+    )
+
+    assert constrained is None
+
+
+def test_explicit_source_candidate_uses_colon_suffix() -> None:
+    request = PromptInput(
+        prompt='Format this: Say "hello" to {name}'
+    )
+
+    assert explicit_source_string_candidates(request) == (
+        'Say "hello" to {name}',
+    )
+
+
+def test_explicit_source_candidate_requires_clear_delimiter() -> None:
+    request = PromptInput(
+        prompt="Generate a pattern matching sequences of digits"
+    )
+
+    assert explicit_source_string_candidates(request) == ()

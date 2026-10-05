@@ -7,10 +7,12 @@ dependencies = [
     "llm-sdk",
     "numpy>=1.26",
     "pydantic>=2.7",
+    "torch>=2.0",
 ]
 
 [tool.uv.sources]
 llm-sdk = { path = "llm_sdk" }
+torch = { index = "pytorch-cpu" }
 
 [dependency-groups]
 dev = [
@@ -34,3 +36,8 @@ exclude = [
     "^llm_sdk/",
     "^\\.venv/",
 ]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

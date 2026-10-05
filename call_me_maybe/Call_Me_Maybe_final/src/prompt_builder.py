@@ -68,11 +68,12 @@ def build_prompt(
     )
 
     return (
-        "Select exactly one function and extract its arguments. "
-        "Use only the listed functions, exact parameter names, JSON types, "
-        f"and enum values.{regex_instruction} "
-        "Output only compact JSON with exactly this shape: "
-        '{"fn_name":"name","args":{...}}. No prose or Markdown.\n'
+        "Choose one listed function and extract its arguments. "
+        "Use exact parameter names, JSON types, and enum values. "
+        f"{regex_instruction} "
+        "Copy source strings verbatim; never autocomplete. "
+        "Output compact JSON only; no prose. "
+        '{"fn_name":"name","args":{...}}.\n'
         f"Functions:{functions_json}\n"
         f"Request:{request_json}\n"
     )

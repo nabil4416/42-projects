@@ -108,7 +108,7 @@ def test_multiple_functions_remain_distinct() -> None:
 def test_instructions_specify_internal_output_contract() -> None:
     prompt = build_prompt([make_function()], PromptInput(prompt="Launch"))
     assert '{"fn_name":"name","args":{...}}' in prompt
-    assert "No prose or Markdown" in prompt
+    assert "no prose" in prompt
 
 
 def test_regex_instruction_is_added_from_parameter_name() -> None:
@@ -167,6 +167,25 @@ def test_builder_has_no_side_effect_on_inputs() -> None:
     original = function.model_dump(mode="json")
     build_prompt([function], PromptInput(prompt="Launch"))
     assert function.model_dump(mode="json") == original
+
+
+def test_prompt_requires_exact_source_copy_for_string_arguments() -> None:
+    definition = FunctionDefinition.model_validate(
+        {
+            "name": "fn_transform",
+            "description": "Handle a supplied text value.",
+            "parameters": {"text": {"type": "string"}},
+            "returns": {"type": "string"},
+        }
+    )
+
+    prompt = build_prompt(
+        [definition],
+        PromptInput(prompt='Use Say "hello" to {name} exactly'),
+    )
+
+    assert "Copy source strings verbatim" in prompt
+    assert "never autocomplete" in prompt
 
 
 def test_all_supplied_prompts_can_be_built() -> None:

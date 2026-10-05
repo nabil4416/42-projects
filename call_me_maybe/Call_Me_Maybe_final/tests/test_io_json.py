@@ -90,7 +90,7 @@ def test_write_results_uses_exact_required_schema(tmp_path: Path) -> None:
         OutputEntry(
             prompt="Add two numbers",
             fn_name="fn_add_numbers",
-            args={"a": 2, "b": 3},
+            args={"a": 2.0, "b": 3.0},
         )
     ]
 
@@ -100,7 +100,7 @@ def test_write_results_uses_exact_required_schema(tmp_path: Path) -> None:
         {
             "prompt": "Add two numbers",
             "fn_name": "fn_add_numbers",
-            "args": {"a": 2, "b": 3},
+            "args": {"a": 2.0, "b": 3.0},
         }
     ]
     assert not output.with_suffix(".json.tmp").exists()
