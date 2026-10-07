@@ -77,7 +77,7 @@ class FunctionCall(StrictModel):
 
 
 class OutputEntry(StrictModel):
-    """Represent one result using the mandatory subject contract."""
+    """Represent one internally validated function-call result."""
 
     prompt: str
     fn_name: str

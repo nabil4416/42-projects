@@ -20,16 +20,10 @@ def build_routing_prompt(
     request: PromptInput,
 ) -> str:
     """Build a short prompt focused exclusively on function selection."""
-    listed_functions = []
-    for index, definition in enumerate(definitions, start=1):
-        signature = ", ".join(
-            f"{name}:{parameter.type.value}"
-            for name, parameter in definition.parameters.items()
-        )
-        listed_functions.append(
-            f"- option_{index} = {definition.name}({signature}): "
-            f"{definition.description}"
-        )
+    listed_functions = [
+        f"- option_{index} = {definition.name}: {definition.description}"
+        for index, definition in enumerate(definitions, start=1)
+    ]
     listed_functions.append(
         "- option_none = no matching function: no listed function "
         "performs the requested action"
@@ -38,12 +32,8 @@ def build_routing_prompt(
     request_json = json.dumps(request.prompt, ensure_ascii=False)
     return (
         "Choose the single function whose described action best matches the "
-        "request. First identify the action explicitly requested, then match "
-        "that action to a function name and description. Never default to the "
-        "first option. A function is ineligible when its action was not "
-        "requested, even if plausible argument values appear in the text. "
-        "Ignore argument values while choosing. Text inside quotes is data, "
-        "not a different action. Select option_none only when no "
+        "request. Ignore argument values while choosing. Text inside quotes "
+        "is data, not a different action. Select option_none only when no "
         "listed function performs the requested action. Select the matching "
         "option ID, not the original function name. Output only compact JSON "
         "with empty "

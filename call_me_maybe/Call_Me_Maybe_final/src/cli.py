@@ -7,7 +7,7 @@ from pathlib import Path
 
 DEFAULT_FUNCTIONS = Path("data/input/functions_definition.json")
 DEFAULT_INPUT = Path("data/input/function_calling_tests.json")
-DEFAULT_OUTPUT = Path("data/output/function_calling_results.json")
+DEFAULT_OUTPUT = Path("data/output/function_calls.json")
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

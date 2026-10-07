@@ -67,7 +67,15 @@ def load_function_definitions(path: Path) -> list[FunctionDefinition]:
 
 def write_results(path: Path, results: list[OutputEntry]) -> None:
     """Write validated results, creating the output directory as needed."""
-    payload = [result.model_dump(mode="json") for result in results]
+    payload = [
+        {
+            "prompt": result.prompt,
+            "name": result.fn_name,
+            "parameters": result.args,
+        }
+        for result in results
+    ]
+
     temporary_path = path.with_suffix(f"{path.suffix}.tmp")
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
