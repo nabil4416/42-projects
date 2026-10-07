@@ -60,7 +60,7 @@ def test_main_generates_and_writes_results(
 
     assert exit_code == 0
     assert json.loads(output.read_text(encoding="utf-8")) == [
-        {"prompt": "Ping now", "fn_name": "fn_ping", "args": {}}
+        {"prompt": "Ping now", "name": "fn_ping", "parameters": {}}
     ]
     stdout = capsys.readouterr().out
     assert "[1/1] fn_ping" in stdout

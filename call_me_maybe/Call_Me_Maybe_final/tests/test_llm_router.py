@@ -57,8 +57,8 @@ def test_routing_prompt_contains_every_dynamic_definition() -> None:
         PromptInput(prompt="Launch now"),
     )
 
-    assert "- option_1 = fn_launch(value:string): Launch a rocket." in prompt
-    assert "- option_2 = fn_play(value:string): Play a song." in prompt
+    assert "- option_1 = fn_launch: Launch a rocket." in prompt
+    assert "- option_2 = fn_play: Play a song." in prompt
     assert "- option_none = no matching function" in prompt
     assert 'Request:"Launch now"' in prompt
 

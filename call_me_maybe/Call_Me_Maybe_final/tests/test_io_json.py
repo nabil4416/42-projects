@@ -99,8 +99,8 @@ def test_write_results_uses_exact_required_schema(tmp_path: Path) -> None:
     assert json.loads(output.read_text(encoding="utf-8")) == [
         {
             "prompt": "Add two numbers",
-            "fn_name": "fn_add_numbers",
-            "args": {"a": 2.0, "b": 3.0},
+            "name": "fn_add_numbers",
+            "parameters": {"a": 2.0, "b": 3.0},
         }
     ]
     assert not output.with_suffix(".json.tmp").exists()
