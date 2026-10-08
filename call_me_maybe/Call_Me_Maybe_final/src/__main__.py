@@ -65,5 +65,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+try:
+    raise SystemExit(main())
+except KeyboardInterrupt:
+    print("\nInterrupted by user.")
+    raise SystemExit(130)
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
