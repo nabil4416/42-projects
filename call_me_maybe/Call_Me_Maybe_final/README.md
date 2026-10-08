@@ -264,8 +264,10 @@ The prompt still contains each original function name and description, so the mo
 the semantic decision. After selection, the option is mapped back to the real function
 definition.
 
-An additional `option_none` candidate allows the router to report that no supplied
-function matches the request instead of forcing a function selection.
+An additional `option_none` candidate is included so the router has a constrained
+way to represent "no matching function". However, because the semantic choice is still
+made by the small language model, unrelated prompts may still be routed incorrectly
+instead of selecting `option_none`.
 
 ### Prefix-aware grammar instead of JSON repair
 
@@ -430,6 +432,8 @@ format before writing `data/output/function_calls.json`.
 
 ## Known Limitations
 
+- `option_none` provides a valid no-match route, but the small LLM may still
+  misclassify an unrelated prompt and select an existing function instead.
 - Semantic function selection still depends on `Qwen/Qwen3-0.6B`.
 - Constrained decoding guarantees structural/schema validity, not perfect semantic
   understanding.
